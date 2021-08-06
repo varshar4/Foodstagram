@@ -6,7 +6,7 @@ Week 9 Project for MLH Production Engineering Fellowship
 
 Make sure you have python3 and pip installed
 
-cd into the backend Create and activate virtual environment using virtualenv
+cd into the backend. Create and activate virtual environment using virtualenv
 
 ```bash
 cd backend
