@@ -29,8 +29,6 @@ def main():
         return redirect(url_for('login'))
     return render_template('main.html', title="Main content", username=username, url=os.getenv("URL"))
 
-# will need some sort of auth backend here
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -60,6 +58,8 @@ def register():
             return redirect(url_for('login', reserve_text="Successfully registered; login below"))
         else:
             return redirect(url_for('register', error=error))
+
+# reserve text is the text that the register page may send to show that a user registered successfully and can login below
 
 
 @app.route('/login', methods=['GET', 'POST'])
