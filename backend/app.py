@@ -37,6 +37,7 @@ def index():
     return render_template('index.pug', title='FOODSTAGRAM - HOME', assetsName='index')
 
 
+
 profileJS = Bundle('scripts/main.js', filters='jsmin', output='js/profile.js')
 profileCSS = Bundle('styles/main.css', 'styles/profile.css',
                     filters='cssmin', output='css/profile.css')

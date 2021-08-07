@@ -1,6 +1,5 @@
 python3-virtualenv
 __pycache__
 *.pyc
-.env
 .DS_Store
 .webassets-cache
