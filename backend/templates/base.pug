@@ -14,5 +14,30 @@ head
     link(lang='sass' rel='stylesheet' href='css/#{assetsName}.css')
   title=title
 body
+  header
+    .header-center
+      a.logo(href="{{ url_for('index') }}") FOODSTAGRAM
+      div
+        input.search(type='text' placeholder='SEARCH')
+        button#sign-up Sign Up
+        button#log-in Log In
   block content
+  #modal.modal
+    .modal-content
+      span.close &times;
+      form#sign-up-form(onsubmit='submitForm')
+        h3 Sign up
+        input(type='text' name='username' placeholder='username')
+        br
+        input(type='password' name='password' placeholder='password')
+        br
+        button Submit
+      form#log-in-form(onsubmit='submitForm')
+        h3 Log In
+        input(type='text' name='username' placeholder='username')
+        br
+        input(type='password' name='password' placeholder='password')
+        br
+        button Submit
+
 script(src='js/#{assetsName}.js')

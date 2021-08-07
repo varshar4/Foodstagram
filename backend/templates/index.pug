@@ -1,13 +1,6 @@
 extends base
 
 block content
-  header
-    .header-center
-      a.logo(href='#') FOODSTAGRAM
-      div
-        input.search(type='text' placeholder='SEARCH')
-        button#sign-up Sign Up
-        button#log-in Log In
   main
     h1 Welcome to Foodstagram!
     div
@@ -26,21 +19,3 @@ block content
         .card
         .card
         .card
-  // The Modal
-  #modal.modal
-    .modal-content
-      span.close &times;
-      form#sign-up-form(onsubmit='submitForm')
-        h3 Sign up
-        input(type='text' placeholder='username')
-        br
-        input(type='password' placeholder='password')
-        br
-        button Submit
-      form#log-in-form(onsubmit='submitForm')
-        h3 Log In
-        input(type='text' placeholder='username')
-        br
-        input(type='password' placeholder='password')
-        br
-        button Submit

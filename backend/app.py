@@ -21,7 +21,7 @@ assets = Environment(app)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 
 client = pymongo.MongoClient(
-    f"mongodb+srv://{mongodbUser}:{mongodbPass}@cluster0.xgwmg.mongodb.net/Cluster0?retryWrites=true&w=majority")
+    f"mongodb+srv://{mongodbUser}:{mongodbPass}@cluster0.xgwmg.mongodb.net/Cluster0?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
 app.secret_key = sessionSecret
 
 # bundler for js and css
@@ -37,10 +37,11 @@ def index():
     return render_template('index.pug', title='FOODSTAGRAM - HOME', assetsName='index')
 
 
-# profileJS = Bundle('', filters='jsmin', output='js/profile.js')
+
+profileJS = Bundle('scripts/main.js', filters='jsmin', output='js/profile.js')
 profileCSS = Bundle('styles/main.css', 'styles/profile.css',
                     filters='cssmin', output='css/profile.css')
-# assets.register('js_profile', profileJS)
+assets.register('js_profile', profileJS)
 assets.register('css_profile', profileCSS)
 
 
