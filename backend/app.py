@@ -1,6 +1,9 @@
 import os
 import pymongo
 from flask import Flask, render_template, send_from_directory, request, session
+from flask_assets import Environment, Bundle
+import cssmin
+from jsmin import jsmin
 from flask.helpers import url_for
 from werkzeug.utils import redirect
 from dotenv import load_dotenv
@@ -12,14 +15,38 @@ mongodbPass = os.getenv("MONGODB_PASS")
 sessionSecret = os.getenv("SESSION_SECRET")
 
 app = Flask(__name__, static_url_path='', static_folder='../frontend/project')
+
+assets = Environment(app)
+
+app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
+
 client = pymongo.MongoClient(
     f"mongodb+srv://{mongodbUser}:{mongodbPass}@cluster0.xgwmg.mongodb.net/Cluster0?retryWrites=true&w=majority")
 app.secret_key = sessionSecret
 
+# bundler for js and css
+indexJS = Bundle('scripts/main.js', filters='jsmin', output='js/index.js')
+indexCSS = Bundle('styles/main.css',
+                  filters='cssmin', output='css/index.css')
+assets.register('js_index', indexJS)
+assets.register('css_index', indexCSS)
+
 
 @app.route('/')
 def index():
-    return "This works!", 200
+    return render_template('index.pug', title='FOODSTAGRAM - HOME', assetsName='index')
+
+
+# profileJS = Bundle('', filters='jsmin', output='js/profile.js')
+profileCSS = Bundle('styles/main.css', 'styles/profile.css',
+                    filters='cssmin', output='css/profile.css')
+# assets.register('js_profile', profileJS)
+assets.register('css_profile', profileCSS)
+
+
+@app.route('/profileTest')
+def profileTest():
+    return render_template('profile.pug', title='FOODSTAGRAM - PROFILE', assetsName='profile')
 
 
 @app.route('/main')
@@ -248,3 +275,8 @@ def dbtest():
         posts = serverGetAllPosts(user)
 
     return render_template('dbtest.html', title="Database Test", data=posts, url=os.getenv("URL"))
+
+
+# dirty trick to build all bundles, this gets angry when non-real files are passed to assets object
+for bundle in assets:
+    bundle.urls()
