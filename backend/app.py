@@ -26,10 +26,6 @@ client = pymongo.MongoClient(
 )
 app.secret_key = sessionSecret
 
-# global variables
-mod = '0'
-err = None
-
 # bundler for js and css
 indexJS = Bundle('scripts/main.js', filters='jsmin', output='js/index.js')
 indexCSS = Bundle('styles/main.css',
@@ -38,17 +34,18 @@ assets.register('js_index', indexJS)
 assets.register('css_index', indexCSS)
 
 
+
 def user():
     return session['username'] if 'username' in session else None
 
 
 @app.route('/')
 def index():
-    global mod, err
-    m = mod
-    mod = '0'
-    e = err
-    err = None
+    m = session['mod'] if 'mod' in session else '0'
+    session['mod'] = '0'
+    e = session['err'] if 'err' in session else None
+    session['err'] = None
+    session['url'] = 'index'
     return render_template('index.pug', title='FOODSTAGRAM - HOME', username=user(), mod_num=m, msg=e, assetsName='index')
 
 
@@ -61,7 +58,12 @@ assets.register('css_profile', profileCSS)
 
 @app.route('/profileTest')
 def profileTest():
-    return render_template('profile.pug', title='FOODSTAGRAM - PROFILE', username=user(), mod_num='0', assetsName='profile')
+    m = session['mod'] 
+    session['mod'] = '0'
+    e = session['err']
+    session['err'] = None
+    session['url'] = 'profileTest'
+    return render_template('profile.pug', title='FOODSTAGRAM - PROFILE', username=user(), mod_num=m, msg=e, assetsName='profile')
 
 
 @app.route('/main')
@@ -74,7 +76,6 @@ def main():
 
 @app.route('/register', methods=['POST'])
 def register():
-    global mod, err
     db = client['users']
     users = db['user1']
 
@@ -93,20 +94,19 @@ def register():
     # add user to db if no error from above
     if error is None:
         users.insert_one({'username': username, 'password': generate_password_hash(password)})
-        mod = '2'
-        err = "Successfully registered; login below" # this is the reserve text 
+        session['mod'] = '2'
+        session['err'] = "Successfully registered; login below" # this is the reserve text 
     else:
-        mod = '1'
-        err = error
+        session['mod'] = '1'
+        session['err'] = error
     
-    return redirect(url_for('index'))
+    return redirect(url_for(session['url']))
 
 # reserve text is the text that the register page may send to show that a user registered successfully and can login below
 
 
 @app.route('/login', methods=['POST'])
 def login():
-    global mod, err
     db = client['users']
     users = db['user1']
 
@@ -121,12 +121,12 @@ def login():
         error = 'Incorrect password.'
 
     if error is not None:
-        err = error
-        mod = '2'
+        session['err'] = error
+        session['mod'] = '2'
     else:
         session['username'] = username
     
-    return redirect(url_for('index'))
+    return redirect(url_for(session['url']))
 
 
 @app.route('/logout')
@@ -134,7 +134,7 @@ def logout():
     if 'username' in session: 
         session.pop('username', None)
 
-    return redirect(url_for('index'))
+    return redirect(url_for(session['url']))
 
 
 def userExists(username):
