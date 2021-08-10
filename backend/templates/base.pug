@@ -13,27 +13,38 @@ head
   - if assetsName
     link(lang='sass' rel='stylesheet' href='css/#{assetsName}.css')
   title=title
-body
+  
+body(onload=('checkModals(' + mod_num + ')'))
   header
     .header-center
       a.logo(href="{{ url_for('index') }}") FOODSTAGRAM
-      div
+      .header-right
         input.search(type='text' placeholder='SEARCH')
-        button#sign-up Sign Up
-        button#log-in Log In
+        div
+          if username
+            p.username= username
+            button
+              a(href='{{ url_for("logout") }}') Log Out
+          else
+            button#sign-up Sign Up
+            button#log-in Log In
   block content
   #modal.modal
     .modal-content
       span.close &times;
-      form#sign-up-form(onsubmit='submitForm')
+      form#sign-up-form(action='{{ url_for("register") }}' method='POST' onsubmit='submitForm')
         h3 Sign up
+        if msg
+          p.message= msg
         input(type='text' name='username' placeholder='username')
         br
         input(type='password' name='password' placeholder='password')
         br
         button Submit
-      form#log-in-form(onsubmit='submitForm')
+      form#log-in-form(action='{{ url_for("login") }}' method='POST' onsubmit='submitForm')
         h3 Log In
+        if msg
+          p.message= msg
         input(type='text' name='username' placeholder='username')
         br
         input(type='password' name='password' placeholder='password')

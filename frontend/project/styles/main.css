@@ -26,15 +26,24 @@ header {
   justify-content: center;
 }
 
+.header-right {
+  width: 565px;
+  display: flex;
+  justify-content: space-between;
+}
+
 .search {
   height: 35px;
   width: 230px;
   padding: 0;
-  margin: 0 4vw;
   background-color: #bbb;
   text-align: center;
   border: none;
   outline: none;
+}
+
+.header-right div {
+  display: flex;
 }
 
 button {
@@ -48,6 +57,23 @@ button {
 
 button:active {
   background-color: #ddd;
+}
+
+button a {
+  text-decoration: none;
+  color: black;
+  cursor: default; 
+}
+
+#sign-up {
+  margin: 0 5px;
+}
+
+.username {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 10px;
 }
 
 /* content */ 
