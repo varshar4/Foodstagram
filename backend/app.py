@@ -6,6 +6,7 @@ import cssmin
 from jsmin import jsmin
 from flask.helpers import url_for
 from werkzeug.utils import redirect
+from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -21,7 +22,8 @@ assets = Environment(app)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 
 client = pymongo.MongoClient(
-    f"mongodb+srv://{mongodbUser}:{mongodbPass}@cluster0.xgwmg.mongodb.net/Cluster0?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
+    f"mongodb+srv://{mongodbUser}:{mongodbPass}@cluster0.xgwmg.mongodb.net/Cluster0?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE"
+)
 app.secret_key = sessionSecret
 
 # bundler for js and css
@@ -32,10 +34,19 @@ assets.register('js_index', indexJS)
 assets.register('css_index', indexCSS)
 
 
+
+def user():
+    return session['username'] if 'username' in session else None
+
+
 @app.route('/')
 def index():
-    return render_template('index.pug', title='FOODSTAGRAM - HOME', assetsName='index')
-
+    m = session['mod'] if 'mod' in session else '0'
+    session['mod'] = '0'
+    e = session['err'] if 'err' in session else None
+    session['err'] = None
+    session['url'] = 'index'
+    return render_template('index.pug', title='FOODSTAGRAM - HOME', username=user(), mod_num=m, msg=e, assetsName='index')
 
 
 profileJS = Bundle('scripts/main.js', filters='jsmin', output='js/profile.js')
@@ -47,7 +58,12 @@ assets.register('css_profile', profileCSS)
 
 @app.route('/profileTest')
 def profileTest():
-    return render_template('profile.pug', title='FOODSTAGRAM - PROFILE', assetsName='profile')
+    m = session['mod'] 
+    session['mod'] = '0'
+    e = session['err']
+    session['err'] = None
+    session['url'] = 'profileTest'
+    return render_template('profile.pug', title='FOODSTAGRAM - PROFILE', username=user(), mod_num=m, msg=e, assetsName='profile')
 
 
 @app.route('/main')
@@ -58,68 +74,67 @@ def main():
     return render_template('main.html', title="Main content", username=username, url=os.getenv("URL"))
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['POST'])
 def register():
     db = client['users']
     users = db['user1']
-    if request.method == 'GET':
-        if request.args.get('error'):
-            error = request.args['error']
-        else:
-            error = ""
-        return render_template('register.html', title="Register", error=error, url=os.getenv("URL"))
+
+    username = request.args.get('username') or request.form.get('username')
+    password = request.args.get('password') or request.form.get('password')
+    error = None
+
+    if not username:
+        error = 'Username is required.'
+    elif not password:
+        error = 'Password is required.'
+    # check if user exists already
+    elif users.find_one({'username': username}) is not None:
+        error = f"User {username} is already registered."
+    
+    # add user to db if no error from above
+    if error is None:
+        users.insert_one({'username': username, 'password': generate_password_hash(password)})
+        session['mod'] = '2'
+        session['err'] = "Successfully registered; login below" # this is the reserve text 
     else:
-        username = request.args.get('username')
-        password = request.args.get('password')
-        error = None
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        # check if user exists already
-        elif users.find_one({'username': username}) is not None:
-            error = f"User {username} is already registered."
-        # add used to db if no error from above
-        if error is None:
-            # we should encrypt passwords n stuff but demo so idc
-            users.insert_one({'username': username, 'password': password})
-            return redirect(url_for('login', reserve_text="Successfully registered; login below"))
-        else:
-            return redirect(url_for('register', error=error))
+        session['mod'] = '1'
+        session['err'] = error
+    
+    return redirect(url_for(session['url']))
 
 # reserve text is the text that the register page may send to show that a user registered successfully and can login below
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
     db = client['users']
     users = db['user1']
-    if request.method == 'GET':
-        if request.args.get('reserve_text'):
-            reserveText = request.args['reserve_text']
-        else:
-            reserveText = ""
-        if request.args.get('error'):
-            error = request.args['error']
-        else:
-            error = ""
-        return render_template('login.html', title="Login", error=error, reserveText=reserveText, url=os.getenv("URL"))
-    elif request.method == 'POST':
-        username = request.args.get('username') or request.form.get('username')
-        password = request.args.get('password') or request.form.get('password')
-        error = None
-        user = users.find_one({'username': username})
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif users.find_one({'username': username, 'password': password}) is None:
-            error = 'Incorrect password.'
+    username = request.args.get('username') or request.form.get('username')
+    password = request.args.get('password') or request.form.get('password')
+    error = None
+    user = users.find_one({'username': username}, projection={"password": True})
 
-        if error is not None:
-            return redirect(url_for('login', error=error))
-        else:
-            session['username'] = username
-            return redirect(url_for('main'))
+    if user is None:
+        error = 'Incorrect username.'
+    elif not check_password_hash(user['password'], password):
+        error = 'Incorrect password.'
+
+    if error is not None:
+        session['err'] = error
+        session['mod'] = '2'
+    else:
+        session['username'] = username
+    
+    return redirect(url_for(session['url']))
+
+
+@app.route('/logout')
+def logout():
+    if 'username' in session: 
+        session.pop('username', None)
+
+    return redirect(url_for(session['url']))
 
 
 def userExists(username):
@@ -261,11 +276,9 @@ def serverGetAllPosts(username):
     if userExists(username) == False:
         return []
 
-    posts = users.find_one({"username": username}, projection={
-                           "posts": True})['posts']
-    if posts is None:
-        return []
-    return posts
+    posts = users.find_one({"username": username}, projection={"posts": True})
+    
+    return posts['posts'] if 'posts' in posts else []
 
 
 @app.route('/dbtest')
