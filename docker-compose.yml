@@ -1,11 +1,23 @@
 version: "3.8"
 
 services:
-  app:
-    container_name: app
+  web:
+    container_name: web
     build: .
     ports:
       - 80:80
     restart: always
     env_file:
       - .env
+
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
