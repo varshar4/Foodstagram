@@ -5,6 +5,7 @@ cssmin==0.2.0
 dnspython==1.16.0
 Flask==2.0.1
 Flask-Assets==2.0
+gunicorn==20.1.0
 itsdangerous==2.0.1
 Jinja2==3.0.1
 jsmin==2.2.2

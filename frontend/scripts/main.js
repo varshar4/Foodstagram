@@ -8,17 +8,21 @@ var lMsg = document.getElementsByClassName("message")[1];
 var span = document.getElementsByClassName("close")[0];
 
 // on sign up click, show modal, open sign up form and hide log in form 
-signUp.onclick = function () {
-  modal.style.display = "block";
-  signForm.style.display = "block";
-  logForm.style.display = "none"; 
+if (signUp) {
+  signUp.onclick = function () {
+    modal.style.display = "block";
+    signForm.style.display = "block";
+    logForm.style.display = "none"; 
+  }
 }
 
 // on log in click, show modal, open log in form and hide sign up form
-logIn.onclick = function () {
-  modal.style.display = "block";
-  signForm.style.display = "none";
-  logForm.style.display = "block"; 
+if (logIn) {
+  logIn.onclick = function () {
+    modal.style.display = "block";
+    signForm.style.display = "none";
+    logForm.style.display = "block"; 
+  }
 }
 
 // close modal on user click of [x]
