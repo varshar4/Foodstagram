@@ -1,0 +1,38 @@
+name: Lint
+
+on: 
+
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      
+      - name: Install Python dependencies
+        run: pip install black flake8
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          continue_on_error: false
+          auto_fix: true
+          black: true
+          black_args: "--line-length 79"
+          black_dir: flask/
+          flake8: true
+          flake8_dir: flask/
