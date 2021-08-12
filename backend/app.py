@@ -17,7 +17,7 @@ mongodbUser = os.getenv("MONGODB_USER")
 mongodbPass = os.getenv("MONGODB_PASS")
 sessionSecret = os.getenv("SESSION_SECRET")
 
-app = Flask(__name__, static_url_path='', static_folder='../frontend/project')
+app = Flask(__name__, static_url_path='', static_folder='../frontend')
 
 assets = Environment(app)
 
