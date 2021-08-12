@@ -10,13 +10,13 @@ block content
         button.sign-up Add Post
         .stats
           .col-4
-            h4=user.posts.length or 0
+            h4 {{user.posts|length}}
             p Posts
           .col-4
-            h4=user.followers.length or 0
+            h4 {{user.followers|length}}
             p Followers
           .col-4
-            h4=user.followers.length or 0
+            h4 {{user.following|length}}
             p Following
     main
       .grid
