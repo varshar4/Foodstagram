@@ -4,7 +4,7 @@ Week 9 Project for MLH Production Engineering Fellowship!
 
 ## Description
 
-Foodstagram is a site where you can share your favorite food photos. Take a look at the most recently posted photos from all users on the home page, or view a specific user's posts on their profile page. 
+Foodstagram is a site where you can share your favorite food photos. After users create an account or log into previously existing ones, they are directed to the home page. Take a look at the most recently posted photos from all users on the home page, or view a specific user's posts on their profile page. 
 
 ## Installation
 
