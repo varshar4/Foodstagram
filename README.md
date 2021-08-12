@@ -1,6 +1,10 @@
-# MLH-Project-2
+# Foodstagram
 
 Week 9 Project for MLH Production Engineering Fellowship!
+
+## Description
+
+Foodstagram is a site where you can share your favorite food photos. Take a look at the most recently posted photos from all users on the home page, or view a specific user's posts on their profile page. 
 
 ## Installation
 
@@ -29,4 +33,4 @@ export FLASK_ENV=development
 flask run
 ```
 
-or use vsc debugger by presing f5.
+or use vsc debugger by pressing `F5`.
