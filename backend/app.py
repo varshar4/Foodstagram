@@ -198,7 +198,7 @@ def createPost():
 
     users.find_one_and_update({"username": username}, {"$push": {'posts': {
                               'title': title, 'caption': caption, 'imageSrc': imageSrc, 'image': image, 'time': time}}}, upsert=True)
-    return redirect(url_for(dbtest))
+    return redirect(url_for('index'))
 
 
 # update post takes four parameters
