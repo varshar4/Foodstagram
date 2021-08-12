@@ -3,7 +3,7 @@ body {
   margin: 0;
 }
 
-/* page header */ 
+/* page header */
 
 header {
   border-bottom: 1px solid black;
@@ -62,7 +62,7 @@ button:active {
 button a {
   text-decoration: none;
   color: black;
-  cursor: default; 
+  cursor: default;
 }
 
 #sign-up {
@@ -76,7 +76,7 @@ button a {
   margin: 0 10px;
 }
 
-/* content */ 
+/* content */
 
 main {
   width: 930px;

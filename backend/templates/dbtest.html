@@ -6,13 +6,14 @@
   <input type="submit" />
 </form>
 <h1>Create a post</h1>
-<form id="cp">
+<form id="cp" enctype = "multipart/form-data" action="{{ url_for('createPost') }}" method="POST">
   <input type="text" id="cp-title" name="title" />
   <input type="text" id="cp-caption" name="caption" />
-  <input type="text" id="cp-image-src" name="imageSrc" />
+  <input type="file" id="cp-image-src" name="imageSrc" accept="image/png, image/jpeg" />
   <input type="submit" id="cp-submit" />
 </form>
 <p id="cp-response"></p>
+<!--
 <script>
   const cpTitle = document.getElementById("cp-title")
   const cpCaption = document.getElementById("cp-caption")
@@ -49,6 +50,7 @@
   }
   cp.addEventListener("submit", createPost)
 </script>
+-->
 {% for item in data %}
 <div>
   <h1>{{ item.title }}</h1>

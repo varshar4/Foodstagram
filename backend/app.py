@@ -7,6 +7,8 @@ from jsmin import jsmin
 from flask.helpers import url_for
 from werkzeug.utils import redirect
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime
+import base64
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,7 +36,6 @@ assets.register('js_index', indexJS)
 assets.register('css_index', indexCSS)
 
 
-
 def user():
     return session['username'] if 'username' in session else None
 
@@ -46,7 +47,30 @@ def index():
     e = session['err'] if 'err' in session else None
     session['err'] = None
     session['url'] = 'index'
-    return render_template('index.pug', title='FOODSTAGRAM - HOME', username=user(), mod_num=m, msg=e, assetsName='index')
+
+    db = client['users']
+    users = db['user1']
+
+    posts = users.find(projection={"posts": True})
+    images = []
+
+    # get all existing posts and sort by time (most recent to oldest)
+    for obj in posts:
+        if 'posts' in obj:
+            images.extend(obj['posts'])
+    images.sort(key=lambda x: x['time'] if 'time' in x else datetime(1970, 1, 1, 0, 0, 0, 0), reverse=True)
+
+    # up to 12 most recent posts will be displayed on the home page (in sets of 3)
+    groups = []
+    for i in range(min(int(len(images) / 3), 4)):
+        temp = []
+        for j in range(3): 
+            img = images[3 * i + j]['image'].decode() if 'image' in images[3 * i + j] else ''
+            imgStr = "data:image/png;base64,{0}".format(img)
+            temp.append({'title': images[3 * i + j]['title'], 'imageData': imgStr})
+        groups.append(temp)
+
+    return render_template('index.pug', title='FOODSTAGRAM - HOME', username=user(), mod_num=m, msg=e, images=groups, assetsName='index')
 
 
 profileJS = Bundle('scripts/main.js', filters='jsmin', output='js/profile.js')
@@ -166,11 +190,15 @@ def createPost():
 
     title = request.args.get('title') or request.form.get('title')
     caption = request.args.get('caption') or request.form.get('caption')
-    imageSrc = request.args.get('imageSrc') or request.form.get('imageSrc')
+    file = request.files['imageSrc']
+    imageSrc = request.args.get('imageSrc') or file.filename
+    time = datetime.now()
+
+    image = base64.b64encode(file.read())
 
     users.find_one_and_update({"username": username}, {"$push": {'posts': {
-                              'title': title, 'caption': caption, 'imageSrc': imageSrc}}}, upsert=True)
-    return "200"
+                              'title': title, 'caption': caption, 'imageSrc': imageSrc, 'image': image, 'time': time}}}, upsert=True)
+    return redirect(url_for(dbtest))
 
 
 # update post takes four parameters
