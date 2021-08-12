@@ -20,6 +20,13 @@ sessionSecret = os.getenv("SESSION_SECRET")
 app = Flask(__name__, static_url_path='', static_folder='../frontend')
 
 assets = Environment(app)
+# dirty trick to build all bundles, this gets angry when non-real files are passed to assets object
+
+
+def updateBundles():
+    for bundle in assets:
+        bundle.urls()
+
 
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 
@@ -82,7 +89,7 @@ assets.register('css_profile', profileCSS)
 
 @app.route('/profileTest')
 def profileTest():
-    m = session['mod'] 
+    m = session['mod']
     session['mod'] = '0'
     e = session['err']
     session['err'] = None
@@ -109,21 +116,25 @@ def register():
 
     if not username:
         error = 'Username is required.'
+    elif ' ' in username:
+        error = 'Username can\'t have spaces'
     elif not password:
         error = 'Password is required.'
     # check if user exists already
     elif users.find_one({'username': username}) is not None:
         error = f"User {username} is already registered."
-    
+
     # add user to db if no error from above
     if error is None:
-        users.insert_one({'username': username, 'password': generate_password_hash(password)})
+        users.insert_one({'username': username, 'password': generate_password_hash(
+            password), 'followers': [], 'following': [], 'posts': [], 'pfpSrc': ''})
         session['mod'] = '2'
-        session['err'] = "Successfully registered; login below" # this is the reserve text 
+        # this is the reserve text
+        session['err'] = "Successfully registered; login below"
     else:
         session['mod'] = '1'
         session['err'] = error
-    
+
     return redirect(url_for(session['url']))
 
 # reserve text is the text that the register page may send to show that a user registered successfully and can login below
@@ -137,7 +148,8 @@ def login():
     username = request.args.get('username') or request.form.get('username')
     password = request.args.get('password') or request.form.get('password')
     error = None
-    user = users.find_one({'username': username}, projection={"password": True})
+    user = users.find_one({'username': username},
+                          projection={"password": True})
 
     if user is None:
         error = 'Incorrect username.'
@@ -149,13 +161,13 @@ def login():
         session['mod'] = '2'
     else:
         session['username'] = username
-    
+
     return redirect(url_for(session['url']))
 
 
 @app.route('/logout')
 def logout():
-    if 'username' in session: 
+    if 'username' in session:
         session.pop('username', None)
 
     return redirect(url_for(session['url']))
@@ -219,6 +231,13 @@ def updatePost():
     title = request.args.get('title') or request.form.get('title')
     caption = request.args.get('caption') or request.form.get('caption')
     imageSrc = request.args.get('imageSrc') or request.form.get('imageSrc')
+    imageSrc = request.args.get('imageSrc') or request.form.get('imageSrc')
+    # to be implemented, probably preferable to increment likes and append comments to the comments array
+    # also probably preferable not to set every single property of the object, rather to only set the properties that are being changed
+    likes = request.args.get('likes') or request.form.get('likes')
+    datePosted = request.args.get(
+        'datePosted') or request.form.get('datePosted')
+    comments = request.args.get('comment') or request.form.get('comment')
 
     users.find_one_and_update({"username": username}, {'$set': {
                               f'posts.{index}.title': title, f'posts.{index}.caption': caption, f'posts.{index}.imageSrc': imageSrc}})
@@ -305,7 +324,7 @@ def serverGetAllPosts(username):
         return []
 
     posts = users.find_one({"username": username}, projection={"posts": True})
-    
+
     return posts['posts'] if 'posts' in posts else []
 
 
@@ -319,6 +338,31 @@ def dbtest():
     return render_template('dbtest.html', title="Database Test", data=posts, url=os.getenv("URL"))
 
 
-# dirty trick to build all bundles, this gets angry when non-real files are passed to assets object
-for bundle in assets:
-    bundle.urls()
+# class Users(Resource):
+#     def get(self, username):
+#         db = client['users']
+#         users = db['user1']
+#         if userExists(username) == False:
+#             return "No such user exists"
+
+#         user = users.find_one({"username": username})
+#         m = session['mod'] if 'mod' in session else '0'
+#         return render_template('/profile.pug', user=user, mod_num=m)
+
+
+# api.add_resource(Users, '/user/<string:username>')
+
+@app.route('/user/<string:username>')
+def userApi(username):
+    db = client['users']
+    users = db['user1']
+    if userExists(username) == False:
+        return "No such user exists"
+
+    user = users.find_one({"username": username})
+    m = session['mod'] if 'mod' in session else '0'
+    updateBundles()
+    return render_template('/profile.pug', user=user, mod_num=m, assetsName='profile')
+
+
+updateBundles()

@@ -4,27 +4,22 @@ block content
   #content.container
     header.header-profile
       .details
-        img.profile-pic(src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTakSD1xNifdNXl-8X_V3eB6NEYbqWc5w2MMg&usqp=CAU' alt='John Doe')
-        h1.heading Jane Doe
+        //- img.profile-pic(src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTakSD1xNifdNXl-8X_V3eB6NEYbqWc5w2MMg&usqp=CAU' alt='John Doe')
+        img.profile-pic(src='#{user.pfpSrc}' alt='John Doe')
+        h1.heading=user.username
         button.sign-up Add Post
         .stats
           .col-4
-            h4 20
+            h4 {{user.posts|length}}
             p Posts
           .col-4
-            h4 10
+            h4 {{user.followers|length}}
             p Followers
           .col-4
-            h4 100
+            h4 {{user.following|length}}
             p Following
     main
-      div
-        .row
-          .card
-          .card
-          .card
-        .row
-          .card
-          .card
-          .card
-        .loader
+      .grid
+        each post in user.posts
+          .post
+            img(src="#{post.imageSrc}")
