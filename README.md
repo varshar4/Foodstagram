@@ -29,7 +29,7 @@ Foodstagram is a site where you can share your favorite food photos. After users
 
 There are login and register pages in addition to the basic html webpage to give users the accessibility to own accounts. Automation is another backbone of this project as there is CI/CD integration, monitoring, and deployment on AWS. The site will be responsive very soon.
 
-Our site can be accessed at foodstagram.tech.
+Our site can be accessed at [foodstagram.tech](foodstagram.tech).
 
 
 ## Installation
