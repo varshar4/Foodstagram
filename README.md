@@ -2,6 +2,26 @@
 
 Week 9 Project for MLH Production Engineering Fellowship!
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/varsharathore16"><img src="https://github.com/varsharathore16.png" width="100px;" alt=""/><br /><sub><b>Varsha Rathore</b></sub></a><br /><a href="#code-varsharathore16" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/cccswann"><img src="https://github.com/cccswann.png" width="100px;" alt=""/><br /><sub><b>Ciara (CiCi) Swann</b></sub></a><br /><a href="#design-cccswann" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/stcwang"><img src="https://github.com/stcwang.png" width="100px;" alt=""/><br /><sub><b>Stephanie Chen Wang</b></sub></a><br /><a href="#code-stcwang" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Lanc33llis"><img src="https://github.com/Lanc33llis.png" width="100px;" alt=""/><br /><sub><b>Lance Ellis</b></sub></a><br /><a href="#content-Lanc33llis" title="Content">🖋</a></td>
+  </tr>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+ 
+
+
 ## Description
 
 Foodstagram is a site where you can share your favorite food photos. After users create an account or log into previously existing ones, they are directed to the home page. Take a look at the most recently posted photos from all users on the home page, or view a specific user's posts on their profile page. 
