@@ -9,7 +9,7 @@ Week 9 Project for MLH Production Engineering Fellowship!
   <tr>
     <td align="center"><a href="https://github.com/varsharathore16"><img src="https://github.com/varsharathore16.png" width="100px;" alt=""/><br /><sub><b>Varsha Rathore</b></sub></a><br /><a href="#code-varsharathore16" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/cccswann"><img src="https://github.com/cccswann.png" width="100px;" alt=""/><br /><sub><b>Ciara (CiCi) Swann</b></sub></a><br /><a href="#design-cccswann" title="Design">🎨</a></td>
-    <td align="center"><a href="https://github.com/stcwang"><img src="https://github.com/stcwang.png" width="100px;" alt=""/><br /><sub><b>Stephanie Chen Wang</b></sub></a><br /><a href="#code-stcwang" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/stcwang"><img src="https://github.com/stcwang.png" width="100px;" alt=""/><br /><sub><b>Stephanie Wang</b></sub></a><br /><a href="#code-stcwang" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Lanc33llis"><img src="https://github.com/Lanc33llis.png" width="100px;" alt=""/><br /><sub><b>Lance Ellis</b></sub></a><br /><a href="#content-Lanc33llis" title="Content">🖋</a></td>
   </tr>
   </tr>
