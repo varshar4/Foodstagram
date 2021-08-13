@@ -4,11 +4,26 @@ services:
   web:
     container_name: web
     build: .
-    ports:
-      - 80:80
     restart: always
     env_file:
       - .env
+    volumes: 
+      - .:/site
+
+  nginx:
+    container_name: nginx
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped 
+    env_file:
+      - .env
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+      - ./user_conf.d:/etc/nginx/user_conf.d
+    depends_on:
+      - web
 
   cadvisor:
     container_name: cadvisor
@@ -21,3 +36,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+
+volumes: 
+  nginx_secrets:
