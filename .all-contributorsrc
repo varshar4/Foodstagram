@@ -1,0 +1,56 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "varsharathore16",
+      "name": "Varsha Rathore",
+      "avatar_url": "https://github.com/varsharathore16.png",
+      "profile": "https://github.com/varsharathore16",
+      "contributions": [
+        "code", "content", "design"
+      ]
+    },
+    
+    {
+      "login": "cccswann",
+      "name": "Ciara (CiCi) Swann",
+      "avatar_url": "https://github.com/cccswann.png",
+      "profile": "https://github.com/cccswann",
+      "contributions": [
+        "code", "content", "design"
+      ]
+    },
+    
+    {
+      "login": "stcwang",
+      "name": "Stephanie Chen Wang",
+      "avatar_url": "https://github.com/stcwang.png",
+      "profile": "https://github.com/stcwang",
+      "contributions": [
+        "code", "content", "design"
+      ]
+    },
+    
+    {
+      "login": "Lanc33llis",
+      "name": "Lance Ellis",
+      "avatar_url": "https://github.com/Lanc33llis.png",
+      "profile": "https://github.com/Lanc33llis",
+      "contributions": [
+         "code", "content", "design"
+      ]
+    },
+    
+
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Foodstagram",
+  "projectOwner": "varsharathore16",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
