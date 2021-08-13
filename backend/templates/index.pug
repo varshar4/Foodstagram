@@ -4,26 +4,8 @@ block content
   main
     h1 Welcome to Foodstagram!
     div
-      // - var first = true
-      each grp in images
-        .row
-          // the first variable should show the first row in a different format, 
-          // but is commented out because it doesn't work
-          if (first) 
-            // - first = false
-            .col
-              .row
-                .card
-                  img(src=grp[0]['imageData'] alt=grp[0]['title'] width=280 height=280)
-              .row
-                .card
-                  img(src=grp[1]['imageData'] alt=grp[1]['title'] width=280 height=280)
-            .card.big
-              img(src=grp[2]['imageData'] alt=grp[2]['title'] width=590 height=590)
-          else
-            .card
-              img(src=grp[0]['imageData'] alt=grp[0]['title'] width=280 height=280)
-            .card
-              img(src=grp[1]['imageData'] alt=grp[1]['title'] width=280 height=280)
-            .card
-              img(src=grp[2]['imageData'] alt=grp[2]['title'] width=280 height=280)
+      .grid
+        each post in images
+          .post
+            img(src=post['imageData'] alt=post['title'])
+    
