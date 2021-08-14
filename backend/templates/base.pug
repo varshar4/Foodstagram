@@ -17,17 +17,17 @@ head
 body(onload=('checkModals(' + mod_num + ')'))
   header
     .header-center
-      a.logo(href="{{ url_for('index') }}") FOODSTAGRAM
-      .header-right
-        input.search(type='text' placeholder='SEARCH')
-        div
-          if username
-            p.username= username
-            button
-              a(href='{{ url_for("logout") }}') Log Out
-          else
-            button#sign-up Sign Up
-            button#log-in Log In
+      div
+        a.logo(href="{{ url_for('index') }}") FOODSTAGRAM
+      input.search(type='text' placeholder='SEARCH')
+      .header-buttons
+        if username
+          p.username= username
+          button
+            a(href='{{ url_for("logout") }}') Log Out
+        else
+          button#sign-up Sign Up
+          button#log-in Log In
   block content
   #modal.modal
     .modal-content

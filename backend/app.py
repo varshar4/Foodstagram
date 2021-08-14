@@ -42,18 +42,40 @@ assets.register("js_index", indexJS)
 assets.register("css_index", indexCSS)
 
 
-def user():
-    return session["username"] if "username" in session else None
+# this method is called on every page load
+def page_info(page):
+    # sets url so that register/login/logout redirects correctly 
+    if "userApi" in page: 
+        session["url"] = "userApi"
+        session["userpage"] = page.split("/")[1]
+    else:
+        session["url"] = page
 
+        if "userpage" in session:
+            session.pop("userpage", None)
+
+    m = session["mod"] if "mod" in session else "0"
+    session["mod"] = "0"
+
+    e = session["err"] if "err" in session else None
+    session["err"] = None
+
+    # returns tuple with username, mod and err
+    return (session["username"] if "username" in session else None, m, e)
+
+
+# method gets and returns both binary images and linked sources 
+def get_image(img_dict):
+    if "image" in img_dict:
+        img = img_dict["image"].decode()
+        imgStr = "data:image/png;base64,{0}".format(img)
+    else:
+        imgStr = img_dict["imageSrc"]
+        
+    return {"title": img_dict["title"], "imageData": imgStr}
 
 @app.route("/")
 def index():
-    m = session["mod"] if "mod" in session else "0"
-    session["mod"] = "0"
-    e = session["err"] if "err" in session else None
-    session["err"] = None
-    session["url"] = "index"
-
     db = client["users"]
     users = db["user1"]
 
@@ -64,31 +86,25 @@ def index():
     for obj in posts:
         if "posts" in obj:
             images.extend(obj["posts"])
+
     images.sort(
         key=lambda x: x["time"] if "time" in x else datetime(1970, 1, 1, 0, 0, 0, 0),
         reverse=True,
     )
 
-    # up to 12 most recent posts will be displayed on the home page (in sets of 3)
+    # up to 12 most recent posts will be displayed on the home page
     groups = []
-    for i in range(min(int(len(images) / 3), 4)):
-        temp = []
-        for j in range(3):
-            img = (
-                images[3 * i + j]["image"].decode()
-                if "image" in images[3 * i + j]
-                else ""
-            )
-            imgStr = "data:image/png;base64,{0}".format(img)
-            temp.append({"title": images[3 * i + j]["title"], "imageData": imgStr})
-        groups.append(temp)
+    for i in range(min(len(images), 12)):
+        groups.append(get_image(images[i]))
+
+    p = page_info("index")
 
     return render_template(
         "index.pug",
         title="FOODSTAGRAM - HOME",
-        username=user(),
-        mod_num=m,
-        msg=e,
+        username=p[0],
+        mod_num=p[1],
+        msg=p[2],
         images=groups,
         assetsName="index",
     )
@@ -104,17 +120,42 @@ assets.register("css_profile", profileCSS)
 
 @app.route("/profileTest")
 def profileTest():
-    m = session["mod"]
-    session["mod"] = "0"
-    e = session["err"]
-    session["err"] = None
-    session["url"] = "profileTest"
+    p = page_info("profileTest")
+
     return render_template(
         "profile.pug",
         title="FOODSTAGRAM - PROFILE",
-        username=user(),
-        mod_num=m,
-        msg=e,
+        username=p[0],
+        mod_num=p[1],
+        msg=p[2],
+        assetsName="profile",
+    )
+
+
+@app.route("/user/<string:username>")
+def userApi(username):
+    db = client["users"]
+    users = db["user1"]
+    if userExists(username) == False:
+        return "No such user exists"
+
+    user = users.find_one({"username": username})
+    updateBundles() 
+
+    # get posts from most recent to oldest 
+    posts = []
+    for img in user["posts"]:
+        posts.insert(0, get_image(img))
+
+    p = page_info(f"userApi/{username}")
+
+    return render_template(
+        "/profile.pug",
+        user=user,
+        posts=posts,
+        username=p[0],
+        mod_num=p[1],
+        msg=p[2],
         assetsName="profile",
     )
 
@@ -166,6 +207,10 @@ def register():
     else:
         session["mod"] = "1"
         session["err"] = error
+    
+    if "userpage" in session: 
+        u = session.pop("userpage", None)
+        return redirect(url_for(session["url"], username=u))
 
     return redirect(url_for(session["url"]))
 
@@ -194,6 +239,10 @@ def login():
     else:
         session["username"] = username
 
+    if "userpage" in session: 
+        u = session.pop("userpage", None)
+        return redirect(url_for(session["url"], username=u))
+
     return redirect(url_for(session["url"]))
 
 
@@ -201,6 +250,10 @@ def login():
 def logout():
     if "username" in session:
         session.pop("username", None)
+
+    if "userpage" in session: 
+        u = session.pop("userpage", None)
+        return redirect(url_for(session["url"], username=u))
 
     return redirect(url_for(session["url"]))
 
@@ -405,19 +458,6 @@ def dbtest():
 
 
 # api.add_resource(Users, '/user/<string:username>')
-
-
-@app.route("/user/<string:username>")
-def userApi(username):
-    db = client["users"]
-    users = db["user1"]
-    if userExists(username) == False:
-        return "No such user exists"
-
-    user = users.find_one({"username": username})
-    m = session["mod"] if "mod" in session else "0"
-    updateBundles()
-    return render_template("/profile.pug", user=user, mod_num=m, assetsName="profile")
 
 
 updateBundles()

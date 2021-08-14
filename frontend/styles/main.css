@@ -7,14 +7,24 @@ body {
 
 header {
   border-bottom: 1px solid black;
-  padding: 10px;
+  padding: 10px 25px;
+  position: sticky; 
+  top: 0;
+  z-index: 1;
+  background-color: white;
 }
 
 .header-center {
   display: flex;
   justify-content: space-between;
-  width: 900px;
+  width: auto;
+  max-width: 900px;
   margin: 0 auto;
+}
+
+.header-center div {
+  width: 300px; 
+  display: flex; 
 }
 
 .logo {
@@ -24,12 +34,7 @@ header {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.header-right {
-  width: 565px;
-  display: flex;
-  justify-content: space-between;
+  padding-right: 5px
 }
 
 .search {
@@ -42,8 +47,8 @@ header {
   outline: none;
 }
 
-.header-right div {
-  display: flex;
+.header-buttons {
+  justify-content: flex-end;
 }
 
 button {
@@ -52,7 +57,7 @@ button {
   border: 1px solid black;
   border-radius: 5px;
   height: 35px;
-  width: 100px;
+  width: 90px;
 }
 
 button:active {
@@ -76,33 +81,63 @@ button a {
   margin: 0 10px;
 }
 
+@media screen and (max-width: 530px) {
+  header {
+    padding: 10px;
+    height: 80px;
+  }
+
+  .search {
+    position: absolute;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: 55px;
+    width: calc(100% - 20px);
+  }
+}
+
 /* content */
 
 main {
-  width: 930px;
+  width: auto;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 40px 25px;
 }
 
 h1 {
   font-size: 26px;
-  padding: 20px 15px;
+  padding: 20px 0;
 }
 
-.row {
-  display: flex;
+/* Image Grid Section */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 1.50rem;
+  margin: 1.75rem 0 2rem 0;
 }
 
-.card {
-  background-color: #bbb;
-  width: 280px;
-  height: 280px;
-  margin: 15px;
+.grid>div {
+  background: #bbb;
+  padding: 1rem;
+  position: relative;
 }
 
-.big {
-  width: 590px;
-  height: 590px;
+.grid>div::before {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.grid>div img {
+  position: absolute;
+  max-width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* modal for sign up and log in */
