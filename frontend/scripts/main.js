@@ -6,6 +6,7 @@ var logForm = document.getElementById("log-in-form")
 var sMsg = document.getElementsByClassName("message")[0];
 var lMsg = document.getElementsByClassName("message")[1];
 var span = document.getElementsByClassName("close")[0];
+var pmodal = document.getElementById("pmodal");
 
 // on sign up click, show modal, open sign up form and hide log in form 
 if (signUp) {
@@ -28,6 +29,7 @@ if (logIn) {
 // close modal on user click of [x]
 span.onclick = function () {
   modal.style.display = "none";
+  pmodal.style.display = "none";
   if (sMsg) {
     sMsg.remove();
     lMsg.remove();
@@ -42,6 +44,10 @@ window.onclick = function (event) {
       sMsg.remove();
       lMsg.remove();
     }
+  }
+
+  if (event.target == pmodal) {
+    pmodal.style.display = "none";
   }
 }
 
@@ -60,4 +66,15 @@ function checkModals(modalNum) {
     signForm.style.display = "none";
     logForm.style.display = "block"; 
   }
+}
+
+// this is for post modals 
+function postClick(image, title, caption, user) {
+  pmodal.style.display = "block";
+  document.getElementById("puser").innerHTML = user; 
+  document.getElementById("pimg").src = image; 
+  document.getElementById("pimg").alt = title; 
+  document.getElementById("ptitle").innerHTML = title; 
+  document.getElementById("pcaption").innerHTML = caption; 
+  document.getElementById("puser").href = '/user/' + user;
 }

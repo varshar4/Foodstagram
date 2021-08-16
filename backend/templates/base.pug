@@ -22,7 +22,7 @@ body(onload=('checkModals(' + mod_num + ')'))
       input.search(type='text' placeholder='SEARCH')
       .header-buttons
         if username
-          p.username= username
+          a.username(href='{{ url_for("userApi", username=username) }}')= username
           button
             a(href='{{ url_for("logout") }}') Log Out
         else

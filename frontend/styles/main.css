@@ -79,6 +79,13 @@ button a {
   flex-direction: column;
   justify-content: center;
   margin: 0 10px;
+  text-decoration: none;
+  color: black;
+}
+
+.username:hover {
+  color: gray;
+  text-decoration: underline;
 }
 
 @media screen and (max-width: 530px) {
@@ -197,4 +204,33 @@ form input, form button {
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* modals for posts */ 
+
+.post-modal {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 30px;
+  border: 1px solid #888;
+  width: 260px;
+}
+
+#puser {
+  color: black;
+  text-decoration: none;
+  line-height: 1.8em;
+}
+
+#puser:hover {
+  color: gray; 
+  text-decoration: underline;
+}
+
+#pgrid {
+  margin: 1em 0 1.5em 0; 
+}
+
+#ptitle {
+  font-weight: bold; 
 }
