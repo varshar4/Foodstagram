@@ -30,7 +30,6 @@ jobs:
         uses: wearerequired/lint-action@v1
         with:
           continue_on_error: false
-          auto_fix: true
           black: true
           black_args: "--line-length 79"
           black_dir: flask/
