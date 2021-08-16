@@ -451,19 +451,4 @@ def dbtest():
     )
 
 
-# class Users(Resource):
-#     def get(self, username):
-#         db = client['users']
-#         users = db['user1']
-#         if userExists(username) == False:
-#             return "No such user exists"
-
-#         user = users.find_one({"username": username})
-#         m = session['mod'] if 'mod' in session else '0'
-#         return render_template('/profile.pug', user=user, mod_num=m)
-
-
-# api.add_resource(Users, '/user/<string:username>')
-
-
 updateBundles()
