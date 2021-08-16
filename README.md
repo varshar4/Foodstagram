@@ -25,9 +25,9 @@ Week 9 Project for MLH Production Engineering Fellowship!
 
 ## Description
 
-Foodstagram is a site where you can share your favorite food photos. After users create an account or log into previously existing ones, they are directed to the home page. Take a look at the most recently posted photos from all users on the home page, or view a specific user's posts on their profile page. 
+Foodstagram is a site where users can share their favorite food photos. After users create an account or log into a previously existing one, they are directed to the home page. Users can take a look at the site's most recently posted photos on the home page or view a specific user's posts on their profile page. 
 
-There are login and register pages in addition to the basic html webpage to give users the accessibility to own accounts. Automation is another backbone of this project as there is CI/CD integration, monitoring, and deployment on AWS. The site will be responsive very soon.
+There are login and register pages in addition to the basic html webpage to give users the accessibility to own accounts. Automation is another backbone of this project as there is CI/CD integration, monitoring, and deployment on AWS. The site is also mobile responsive.
 
 Our site can be accessed at [foodstagram.tech](https://foodstagram.tech).
 
