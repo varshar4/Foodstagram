@@ -1,9 +1,7 @@
 import os
 import pymongo
-from flask import Flask, render_template, send_from_directory, request, session
+from flask import Flask, render_template, request, session
 from flask_assets import Environment, Bundle
-import cssmin
-from jsmin import jsmin
 from flask.helpers import url_for
 from werkzeug.utils import redirect
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -20,7 +18,8 @@ sessionSecret = os.getenv("SESSION_SECRET")
 app = Flask(__name__, static_url_path="", static_folder="../frontend")
 
 assets = Environment(app)
-# dirty trick to build all bundles, this gets angry when non-real files are passed to assets object
+# dirty trick to build all bundles, this gets angry when non-real files are
+# passed to assets object
 
 
 def updateBundles():
@@ -31,7 +30,8 @@ def updateBundles():
 app.jinja_env.add_extension("pypugjs.ext.jinja.PyPugJSExtension")
 
 client = pymongo.MongoClient(
-    f"mongodb+srv://{mongodbUser}:{mongodbPass}@cluster0.xgwmg.mongodb.net/Cluster0?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE"
+    f"mongodb+srv://{mongodbUser}:{mongodbPass}@cluster0.xgwmg.mongodb.net/"
+    + "Cluster0?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE"
 )
 app.secret_key = sessionSecret
 
@@ -44,8 +44,8 @@ assets.register("css_index", indexCSS)
 
 # this method is called on every page load
 def page_info(page):
-    # sets url so that register/login/logout redirects correctly 
-    if "userApi" in page: 
+    # sets url so that register/login/logout redirects correctly
+    if "userApi" in page:
         session["url"] = "userApi"
         session["userpage"] = page.split("/")[1]
     else:
@@ -64,28 +64,36 @@ def page_info(page):
     return (session["username"] if "username" in session else None, m, e)
 
 
-# method gets and returns both binary images and linked sources 
-def get_image(img_dict):
+# method gets and returns both binary images and linked sources
+def get_image(img_dict, user=None):
     if "image" in img_dict:
         img = img_dict["image"].decode()
         imgStr = "data:image/png;base64,{0}".format(img)
     else:
         imgStr = img_dict["imageSrc"]
-        
-    return {"title": img_dict["title"], "imageData": imgStr}
+
+    return {
+        "title": img_dict["title"],
+        "caption": img_dict["caption"],
+        "imageData": imgStr,
+        "user": user or img_dict["user"],
+    }
+
 
 @app.route("/")
 def index():
     db = client["users"]
     users = db["user1"]
 
-    posts = users.find(projection={"posts": True})
+    posts = users.find(projection={"username": True, "posts": True})
     images = []
 
     # get all existing posts and sort by time (most recent to oldest)
     for obj in posts:
         if "posts" in obj:
-            images.extend(obj["posts"])
+            for p in obj["posts"]:
+                p["user"] = obj["username"]
+                images.append(p)
 
     images.sort(
         key=lambda x: x["time"] if "time" in x else datetime(1970, 1, 1, 0, 0, 0, 0),
@@ -136,21 +144,22 @@ def profileTest():
 def userApi(username):
     db = client["users"]
     users = db["user1"]
-    if userExists(username) == False:
+    if not userExists(username):
         return "No such user exists"
 
     user = users.find_one({"username": username})
-    updateBundles() 
+    updateBundles()
 
-    # get posts from most recent to oldest 
+    # get posts from most recent to oldest
     posts = []
     for img in user["posts"]:
-        posts.insert(0, get_image(img))
+        posts.insert(0, get_image(img, username))
 
     p = page_info(f"userApi/{username}")
 
     return render_template(
         "/profile.pug",
+        title=f"FOODSTAGRAM - {username}",
         user=user,
         posts=posts,
         username=p[0],
@@ -202,20 +211,18 @@ def register():
             }
         )
         session["mod"] = "2"
-        # this is the reserve text
+        # this is the reserve text -- shows that a user registered successfully
+        # and can login below
         session["err"] = "Successfully registered; login below"
     else:
         session["mod"] = "1"
         session["err"] = error
-    
-    if "userpage" in session: 
+
+    if "userpage" in session:
         u = session.pop("userpage", None)
         return redirect(url_for(session["url"], username=u))
 
     return redirect(url_for(session["url"]))
-
-
-# reserve text is the text that the register page may send to show that a user registered successfully and can login below
 
 
 @app.route("/login", methods=["POST"])
@@ -239,7 +246,7 @@ def login():
     else:
         session["username"] = username
 
-    if "userpage" in session: 
+    if "userpage" in session:
         u = session.pop("userpage", None)
         return redirect(url_for(session["url"], username=u))
 
@@ -251,7 +258,7 @@ def logout():
     if "username" in session:
         session.pop("username", None)
 
-    if "userpage" in session: 
+    if "userpage" in session:
         u = session.pop("userpage", None)
         return redirect(url_for(session["url"], username=u))
 
@@ -333,9 +340,8 @@ def updatePost():
     imageSrc = request.args.get("imageSrc") or request.form.get("imageSrc")
     # to be implemented, probably preferable to increment likes and append comments to the comments array
     # also probably preferable not to set every single property of the object, rather to only set the properties that are being changed
-    likes = request.args.get("likes") or request.form.get("likes")
-    datePosted = request.args.get("datePosted") or request.form.get("datePosted")
-    comments = request.args.get("comment") or request.form.get("comment")
+    # likes = request.args.get("likes") or request.form.get("likes")
+    # comments = request.args.get("comment") or request.form.get("comment")
 
     users.find_one_and_update(
         {"username": username},
@@ -383,7 +389,7 @@ def getPost():
     users = db["user1"]
 
     username = request.args.get("username") or request.form.get("username")
-    if userExists(username) == False:
+    if not userExists(username):
         return "No such user exists"
     index = int(request.args.get("index") or request.form.get("index"))
 
@@ -406,7 +412,7 @@ def serverGetPost(username, index):
     db = client["users"]
     users = db["user1"]
 
-    if userExists(username) == False:
+    if not userExists(username):
         return "No such user exists"
 
     posts = users.find_one({"username": username}, projection={"posts": True})["posts"]
@@ -425,7 +431,7 @@ def serverGetAllPosts(username):
     db = client["users"]
     users = db["user1"]
 
-    if userExists(username) == False:
+    if not userExists(username):
         return []
 
     posts = users.find_one({"username": username}, projection={"posts": True})

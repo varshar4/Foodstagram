@@ -6,6 +6,15 @@ block content
     div
       .grid
         each post in images
-          .post
+          .post(onclick=('postClick("' + post['imageData'] + '","' + post['title'] + '","' + post['caption'] + '","' + post['user'] + '")'))
             img(src=post['imageData'] alt=post['title'])
     
+    #pmodal.modal
+      .post-modal
+        span.close &times;
+        a#puser(href="{{ url_for('index') }}") username
+        #pgrid.grid
+          .post
+            img#pimg(src="" alt="hoho")
+        p#ptitle title
+        p#pcaption caption
