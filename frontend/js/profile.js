@@ -9,3 +9,15 @@ if(event.target==pmodal){pmodal.style.display="none";}}
 function submitForm(){modal.style.display="none";}
 function checkModals(modalNum){if(modalNum===1){modal.style.display="block";signForm.style.display="block";logForm.style.display="none";}else if(modalNum===2){modal.style.display="block";signForm.style.display="none";logForm.style.display="block";}}
 function postClick(image,title,caption,user){pmodal.style.display="block";document.getElementById("puser").innerHTML=user;document.getElementById("pimg").src=image;document.getElementById("pimg").alt=title;document.getElementById("ptitle").innerHTML=title;document.getElementById("pcaption").innerHTML=caption;document.getElementById("puser").href='/user/'+user;}
+var postButton=document.getElementById("new-post-button")
+var newPostModal=document.getElementById("new-post-modal")
+var newPostForm=document.getElementById("new-post")
+var imageSrc=document.getElementById("cp-image-src")
+var uploadedImage=document.getElementById("cp-image-uploaded")
+postButton.onclick=function(event){if(newPostModal.style.display!="grid"){newPostModal.style.display="grid"}}
+newPostModal.onclick=function(event){if(event.target==newPostModal){newPostModal.style.display="none"}}
+imageSrc.addEventListener("change",function(){const files=imageSrc.files
+if(files.length==0){uploadedImage.src=""
+uploadedImage.style.backgroundColor="black"}else{const file=files[0]
+uploadedImage.style.backgroundImage=`url(${URL.createObjectURL(file)})`}})
+document.getElementById("cp-return-url").value=window.location.href

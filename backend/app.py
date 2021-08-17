@@ -118,7 +118,9 @@ def index():
     )
 
 
-profileJS = Bundle("scripts/main.js", filters="jsmin", output="js/profile.js")
+profileJS = Bundle(
+    "scripts/main.js", "scripts/profile.js", filters="jsmin", output="js/profile.js"
+)
 profileCSS = Bundle(
     "styles/main.css", "styles/profile.css", filters="cssmin", output="css/profile.css"
 )
@@ -297,6 +299,7 @@ def createPost():
     caption = request.args.get("caption") or request.form.get("caption")
     file = request.files["imageSrc"]
     imageSrc = request.args.get("imageSrc") or file.filename
+    redirectURL = request.args.get("returnURL") or request.form.get("returnURL")
     time = datetime.now()
 
     image = base64.b64encode(file.read())
@@ -316,7 +319,7 @@ def createPost():
         },
         upsert=True,
     )
-    return redirect(url_for("index"))
+    return redirect(redirectURL)
 
 
 # update post takes four parameters
