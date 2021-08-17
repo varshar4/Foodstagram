@@ -96,8 +96,7 @@ def index():
                 images.append(p)
 
     images.sort(
-        key=lambda x: x["time"] if "time" in x else datetime(
-            1970, 1, 1, 0, 0, 0, 0),
+        key=lambda x: x["time"] if "time" in x else datetime(1970, 1, 1, 0, 0, 0, 0),
         reverse=True,
     )
 
@@ -119,8 +118,9 @@ def index():
     )
 
 
-profileJS = Bundle("scripts/main.js", "scripts/profile.js",
-                   filters="jsmin", output="js/profile.js")
+profileJS = Bundle(
+    "scripts/main.js", "scripts/profile.js", filters="jsmin", output="js/profile.js"
+)
 profileCSS = Bundle(
     "styles/main.css", "styles/profile.css", filters="cssmin", output="css/profile.css"
 )
@@ -235,8 +235,7 @@ def login():
     username = request.args.get("username") or request.form.get("username")
     password = request.args.get("password") or request.form.get("password")
     error = None
-    user = users.find_one({"username": username},
-                          projection={"password": True})
+    user = users.find_one({"username": username}, projection={"password": True})
 
     if user is None:
         error = "Incorrect username."
@@ -300,8 +299,7 @@ def createPost():
     caption = request.args.get("caption") or request.form.get("caption")
     file = request.files["imageSrc"]
     imageSrc = request.args.get("imageSrc") or file.filename
-    redirectURL = request.args.get(
-        "returnURL") or request.form.get("returnURL")
+    redirectURL = request.args.get("returnURL") or request.form.get("returnURL")
     time = datetime.now()
 
     image = base64.b64encode(file.read())
@@ -376,10 +374,8 @@ def deletePost():
 
     index = request.args.get("index") or request.form.get("index")
 
-    users.find_one_and_update({"username": username}, {
-                              "$unset": {f"posts.{index}": 1}})
-    users.find_one_and_update({"username": username}, {
-                              "$pull": {"posts": None}})
+    users.find_one_and_update({"username": username}, {"$unset": {f"posts.{index}": 1}})
+    users.find_one_and_update({"username": username}, {"$pull": {"posts": None}})
     return "200"
 
 
@@ -400,8 +396,7 @@ def getPost():
         return "No such user exists"
     index = int(request.args.get("index") or request.form.get("index"))
 
-    posts = users.find_one({"username": username}, projection={
-                           "posts": True})["posts"]
+    posts = users.find_one({"username": username}, projection={"posts": True})["posts"]
     if posts is None:
         return "This user has no posts"
     if index >= len(posts) or index < 0:
@@ -423,8 +418,7 @@ def serverGetPost(username, index):
     if not userExists(username):
         return "No such user exists"
 
-    posts = users.find_one({"username": username}, projection={
-                           "posts": True})["posts"]
+    posts = users.find_one({"username": username}, projection={"posts": True})["posts"]
     if posts is None:
         return "This user has no posts"
     if index >= len(posts) or index < 0:
