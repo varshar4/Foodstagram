@@ -64,6 +64,11 @@ button:active {
   background-color: #ddd;
 }
 
+button:disabled {
+  color: #888;
+  cursor: not-allowed;
+}
+
 button a {
   text-decoration: none;
   color: black;
