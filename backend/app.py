@@ -166,18 +166,11 @@ def userApi(username):
     )
 
 
-@app.route("/main")
-def main():
-    username = session["username"] or None
-    if username is None:
-        return redirect(url_for("login"))
-    return render_template(
-        "main.html", title="Main content", username=username, url=os.getenv("URL")
-    )
-
-
 @app.route("/register", methods=["POST"])
 def register():
+    if "username" in session:
+        return 405, "already logged in"
+
     db = client["users"]
     users = db["user1"]
 
@@ -224,6 +217,9 @@ def register():
 
 @app.route("/login", methods=["POST"])
 def login():
+    if "username" in session:
+        return 405, "already logged in"
+
     db = client["users"]
     users = db["user1"]
 
@@ -283,9 +279,10 @@ def userExists(username):
 
 @app.route("/createPost", methods=["POST"])
 def createPost():
-    username = session["username"] if "username" in session else None
-    if username is None:
-        return "401"
+    if "username" not in session:
+        return 401, "Must be logged in"
+
+    username = session["username"]
 
     db = client["users"]
     users = db["user1"]
@@ -324,9 +321,10 @@ def createPost():
 # imageSrc, the new image url of the post
 @app.route("/updatePost", methods=["POST"])
 def updatePost():
-    username = session["username"] or None
-    if username is None:
-        return "401"
+    if "username" not in session:
+        return 401, "Must be logged in"
+        
+    username = session["username"]
 
     db = client["users"]
     users = db["user1"]
@@ -359,9 +357,10 @@ def updatePost():
 
 @app.route("/deletePost", methods=["POST"])
 def deletePost():
-    username = session["username"] or None
-    if username is None:
-        return "401"
+    if "username" not in session:
+        return 401, "Must be logged in"
+        
+    username = session["username"]
 
     db = client["users"]
     users = db["user1"]
@@ -504,18 +503,6 @@ def serverGetAllPosts(username):
     posts = users.find_one({"username": username}, projection={"posts": True})
 
     return posts["posts"] if "posts" in posts else []
-
-
-@app.route("/dbtest")
-def dbtest():
-    user = request.args.get("username")
-    posts = []
-    if user is not None:
-        posts = serverGetAllPosts(user)
-
-    return render_template(
-        "dbtest.html", title="Database Test", data=posts, url=os.getenv("URL")
-    )
 
 
 updateBundles()
