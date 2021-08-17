@@ -128,24 +128,11 @@ assets.register("js_profile", profileJS)
 assets.register("css_profile", profileCSS)
 
 
-@app.route("/profileTest")
-def profileTest():
-    p = page_info("profileTest")
-
-    return render_template(
-        "profile.pug",
-        title="FOODSTAGRAM - PROFILE",
-        username=p[0],
-        mod_num=p[1],
-        msg=p[2],
-        assetsName="profile",
-    )
-
-
 @app.route("/user/<string:username>")
 def userApi(username):
     db = client["users"]
     users = db["user1"]
+
     if not userExists(username):
         return "No such user exists"
 
@@ -159,11 +146,19 @@ def userApi(username):
 
     p = page_info(f"userApi/{username}")
 
+    following = False
+
+    if p[0]:
+        follow = users.find_one({"username": p[0]}, projection={"following": True})
+        if "following" in follow and username in follow["following"]:
+            following = True
+
     return render_template(
         "/profile.pug",
         title=f"FOODSTAGRAM - {username}",
         user=user,
         posts=posts,
+        following=following,
         username=p[0],
         mod_num=p[1],
         msg=p[2],
@@ -288,7 +283,7 @@ def userExists(username):
 
 @app.route("/createPost", methods=["POST"])
 def createPost():
-    username = session["username"] or None
+    username = session["username"] if "username" in session else None
     if username is None:
         return "401"
 
@@ -339,7 +334,6 @@ def updatePost():
     index = request.args.get("index") or request.form.get("index")
     title = request.args.get("title") or request.form.get("title")
     caption = request.args.get("caption") or request.form.get("caption")
-    imageSrc = request.args.get("imageSrc") or request.form.get("imageSrc")
     imageSrc = request.args.get("imageSrc") or request.form.get("imageSrc")
     # to be implemented, probably preferable to increment likes and append comments to the comments array
     # also probably preferable not to set every single property of the object, rather to only set the properties that are being changed
@@ -408,9 +402,79 @@ def getPost():
         return requestedPost
 
 
+@app.route("/follow/<string:username>", methods=["POST"])
+def follow(username):
+    db = client["users"]
+    users = db["user1"]
+
+    currUser = session["username"] if "username" in session else None
+    if currUser is None:
+        return "401"
+
+    users.find_one_and_update(
+        {"username": username},
+        {
+            "$push": {
+                "followers": currUser,
+            }
+        },
+        upsert=True,
+    )
+
+    users.find_one_and_update(
+        {"username": currUser},
+        {
+            "$push": {
+                "following": username,
+            }
+        },
+        upsert=True,
+    )
+
+    if "userpage" in session:
+        u = session.pop("userpage", None)
+        return redirect(url_for(session["url"], username=u))
+
+    return redirect(url_for(session["url"]))
+
+
+@app.route("/unfollow/<string:username>", methods=["POST"])
+def unfollow(username):
+    db = client["users"]
+    users = db["user1"]
+
+    currUser = session["username"] if "username" in session else None
+    if currUser is None:
+        return "401"
+
+    users.find_one_and_update(
+        {"username": username},
+        {
+            "$pull": {
+                "followers": currUser,
+            }
+        },
+        upsert=True,
+    )
+
+    users.find_one_and_update(
+        {"username": currUser},
+        {
+            "$pull": {
+                "following": username,
+            }
+        },
+        upsert=True,
+    )
+
+    if "userpage" in session:
+        u = session.pop("userpage", None)
+        return redirect(url_for(session["url"], username=u))
+
+    return redirect(url_for(session["url"]))
+
+
 # server side functions for getting posts,
-
-
 def serverGetPost(username, index):
     db = client["users"]
     users = db["user1"]

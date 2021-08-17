@@ -5,7 +5,7 @@ var logIn = document.getElementById("log-in")
 var logForm = document.getElementById("log-in-form")
 var sMsg = document.getElementsByClassName("message")[0];
 var lMsg = document.getElementsByClassName("message")[1];
-var span = document.getElementsByClassName("close")[0];
+var span = document.getElementsByClassName("close");
 var pmodal = document.getElementById("pmodal");
 
 // on sign up click, show modal, open sign up form and hide log in form 
@@ -27,7 +27,16 @@ if (logIn) {
 }
 
 // close modal on user click of [x]
-span.onclick = function () {
+span[0].onclick = function () {
+  modal.style.display = "none";
+  pmodal.style.display = "none";
+  if (sMsg) {
+    sMsg.remove();
+    lMsg.remove();
+  }
+}
+
+span[1].onclick = function () {
   modal.style.display = "none";
   pmodal.style.display = "none";
   if (sMsg) {
