@@ -323,7 +323,7 @@ def createPost():
 def updatePost():
     if "username" not in session:
         return 401, "Must be logged in"
-        
+
     username = session["username"]
 
     db = client["users"]
@@ -359,7 +359,7 @@ def updatePost():
 def deletePost():
     if "username" not in session:
         return 401, "Must be logged in"
-        
+
     username = session["username"]
 
     db = client["users"]
