@@ -1,13 +1,22 @@
 extends base
 
 block content
+  #new-post-modal
+    form#new-post(action="/createPost" method="post" enctype="multipart/form-data")
+      input(type="hidden" id="cp-return-url" name="returnURL")
+      input(type="text" id="cp-title" name="title" placeholder="Title")
+      label(for="cp-image-src") Upload an image
+      input(type="file" id="cp-image-src" name="imageSrc" accept="image/png, image/jpeg")
+      #cp-image-uploaded
+      textarea(type="text" id="cp-caption" name="caption" placeholder="Caption" rows="2" maxlength="100")
+      input(type="submit" id="cp-submit")
   #content.container
     header.header-profile
       .details
         //- img.profile-pic(src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTakSD1xNifdNXl-8X_V3eB6NEYbqWc5w2MMg&usqp=CAU' alt='John Doe')
         img.profile-pic(src='#{user.pfpSrc}' alt='John Doe')
         h1.heading=user.username
-        button Add Post
+        button#new-post-button Add Post
         .stats
           .col-4
             h4 {{user.posts|length}}
