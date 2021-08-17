@@ -19,7 +19,6 @@ body(onload=('checkModals(' + mod_num + ')'))
     .header-center
       div
         a.logo(href="{{ url_for('index') }}") FOODSTAGRAM
-      input.search(type='text' placeholder='SEARCH')
       .header-buttons
         if username
           a.username(href='{{ url_for("userApi", username=username) }}')= username

@@ -37,16 +37,6 @@ header {
   padding-right: 5px
 }
 
-.search {
-  height: 35px;
-  width: 230px;
-  padding: 0;
-  background-color: #bbb;
-  text-align: center;
-  border: none;
-  outline: none;
-}
-
 .header-buttons {
   justify-content: flex-end;
 }
@@ -91,22 +81,6 @@ button a {
 .username:hover {
   color: gray;
   text-decoration: underline;
-}
-
-@media screen and (max-width: 530px) {
-  header {
-    padding: 10px;
-    height: 80px;
-  }
-
-  .search {
-    position: absolute;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    top: 55px;
-    width: calc(100% - 20px);
-  }
 }
 
 /* content */
