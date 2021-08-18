@@ -1,6 +1,6 @@
 import os
 import pymongo
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, send_from_directory
 from flask_assets import Environment, Bundle
 from flask.helpers import url_for
 from werkzeug.utils import redirect
@@ -503,6 +503,12 @@ def serverGetAllPosts(username):
     posts = users.find_one({"username": username}, projection={"posts": True})
 
     return posts["posts"] if "posts" in posts else []
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 updateBundles()
