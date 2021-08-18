@@ -504,9 +504,11 @@ def serverGetAllPosts(username):
 
     return posts["posts"] if "posts" in posts else []
 
+
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path),
+    return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 updateBundles()
