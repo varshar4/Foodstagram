@@ -134,7 +134,7 @@ def userApi(username):
     users = db["user1"]
 
     if not userExists(username):
-        return "No such user exists"
+        return "No such user exists", 404
 
     user = users.find_one({"username": username})
     updateBundles()
@@ -169,7 +169,7 @@ def userApi(username):
 @app.route("/register", methods=["POST"])
 def register():
     if "username" in session:
-        return 405, "already logged in"
+        return "already logged in", 405
 
     db = client["users"]
     users = db["user1"]
@@ -218,7 +218,7 @@ def register():
 @app.route("/login", methods=["POST"])
 def login():
     if "username" in session:
-        return 405, "already logged in"
+        return "already logged in", 405
 
     db = client["users"]
     users = db["user1"]
@@ -280,7 +280,7 @@ def userExists(username):
 @app.route("/createPost", methods=["POST"])
 def createPost():
     if "username" not in session:
-        return 401, "Must be logged in"
+        return "Must be logged in", 401
 
     username = session["username"]
 
@@ -322,7 +322,7 @@ def createPost():
 @app.route("/updatePost", methods=["POST"])
 def updatePost():
     if "username" not in session:
-        return 401, "Must be logged in"
+        return "Must be logged in", 401
 
     username = session["username"]
 
@@ -358,7 +358,7 @@ def updatePost():
 @app.route("/deletePost", methods=["POST"])
 def deletePost():
     if "username" not in session:
-        return 401, "Must be logged in"
+        return "Must be logged in", 401
 
     username = session["username"]
 
@@ -406,9 +406,10 @@ def follow(username):
     db = client["users"]
     users = db["user1"]
 
-    currUser = session["username"] if "username" in session else None
-    if currUser is None:
-        return "401"
+    if "username" not in session:
+        return "Must be logged in", 401
+
+    currUser = session["username"]
 
     users.find_one_and_update(
         {"username": username},
@@ -442,9 +443,10 @@ def unfollow(username):
     db = client["users"]
     users = db["user1"]
 
-    currUser = session["username"] if "username" in session else None
-    if currUser is None:
-        return "401"
+    if "username" not in session:
+        return "Must be logged in", 401
+
+    currUser = session["username"]
 
     users.find_one_and_update(
         {"username": username},
@@ -505,10 +507,11 @@ def serverGetAllPosts(username):
     return posts["posts"] if "posts" in posts else []
 
 
-@app.route('/favicon.ico')
+@app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(os.path.join(app.root_path),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(
+        os.path.join(app.root_path), "favicon.ico", mimetype="image/vnd.microsoft.icon"
+    )
 
 
 updateBundles()
