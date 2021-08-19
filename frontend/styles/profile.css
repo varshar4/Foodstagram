@@ -16,7 +16,9 @@
 
 .details {
   max-width: 100%;
-  text-align: center;
+  /* text-align: center; */
+  display: grid;
+  place-items: center;
 }
 
 .profile-pic {
@@ -25,12 +27,22 @@
   object-fit: center;
   border-radius: 50%;
   border: 5px solid #bbb;
+  background-color:  #bbb;
+}
+
+.add-profile-pic {
+  position: relative;
+  width: 25px;
+  left: -50px;
+  top: 50px;
+  padding: 25px;
 }
 
 .stats {
   width: 24rem;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 75px;
 }
 
 .stats .col-4 {
@@ -46,7 +58,7 @@
 
 /* add post modal */
 
-#new-post-modal {
+#new-post-modal, #new-profile-pic-modal {
   position: fixed;
   background-color: rgba(0, 0, 0, 0.4);
   width: 100vw;
@@ -59,7 +71,7 @@
   overflow: scroll;
 }
 
-#new-post-modal form {
+#new-post-modal form, #new-profile-pic-modal form {
   width: 500px;
   height: 500px;
   background-color: white;
@@ -69,11 +81,11 @@
   flex-direction: column;
 }
 
-#cp-image-src {
+#cp-image-src, #pf-image-src {
   display: none;
 }
 
-#new-post label {
+#new-post label, #profile-picture label {
   cursor: pointer;
   display: inline-block;
   border: 1px gray solid;
@@ -83,7 +95,7 @@
   margin-bottom: 10px;
 }
 
-#new-post label:hover {
+#new-post label:hover, #profile-picture label:hover {
   background-color: black;
   color: white;
 }
@@ -97,7 +109,7 @@
   border: 1px solid gray;
 }
 
-#cp-image-uploaded {
+#cp-image-uploaded, #pf-image-uploaded {
   flex-grow: 1;
   background-image: url();
   border-radius: 5px;
