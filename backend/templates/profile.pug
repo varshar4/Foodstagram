@@ -10,11 +10,22 @@ block content
       #cp-image-uploaded
       textarea(type="text" id="cp-caption" name="caption" placeholder="Caption" rows="2" maxlength="100" required)
       input(type="submit" id="cp-submit" value="Post!")
+  #new-profile-pic-modal
+    form#profile-picture(action="/updateUser" method="post" enctype="multipart/form-data")
+      input(type="hidden" id="pf-return-url" name="returnURL")
+      label(for="pf-image-src") Upload your new profile picture
+      input(type="file" id="pf-image-src" name="pfpPic" accept="image/png, image/jpeg" required)
+      #pf-image-uploaded
+      input(type="submit" id="pf-submit" value="Update")
   #content.container
     header.header-profile
       .details
         //- img.profile-pic(src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTakSD1xNifdNXl-8X_V3eB6NEYbqWc5w2MMg&usqp=CAU' alt='John Doe')
-        img.profile-pic(src='#{user.pfpSrc}' alt='John Doe')
+        img.add-profile-pic(id="pfp-button" src="/images/add-prof-pic.svg", alt="")
+        if pfpData
+          img.profile-pic(src=pfpData alt='John Doe')
+        else 
+          img.profile-pic(src='/images/user.svg' alt='John Doe')
         h1.heading=user.username
         if user.username == username
           button#new-post-button Add Post
