@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, session, send_from_directory
 from flask_assets import Environment, Bundle
 from flask.helpers import url_for
 from werkzeug.utils import redirect
+import bson
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 import base64
@@ -163,6 +164,8 @@ def userApi(username):
     pfpData = ""
     if "pfpSrc" in user:
         pfpData = imgStr(user["pfpSrc"])
+    if pfpData == "data:image/png;base64,":
+        pfpData = ""
 
     return render_template(
         "/profile.pug",
@@ -209,7 +212,7 @@ def register():
                 "followers": [],
                 "following": [],
                 "posts": [],
-                "pfpSrc": "",
+                "pfpSrc": bson.BSON(),
             }
         )
         session["mod"] = "2"
