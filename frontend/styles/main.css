@@ -8,7 +8,7 @@ body {
 header {
   border-bottom: 1px solid black;
   padding: 10px 25px;
-  position: sticky; 
+  position: sticky;
   top: 0;
   z-index: 1;
   background-color: white;
@@ -23,8 +23,8 @@ header {
 }
 
 .header-center div {
-  width: 300px; 
-  display: flex; 
+  width: 300px;
+  display: flex;
 }
 
 .logo {
@@ -186,7 +186,7 @@ form input, form button {
   cursor: pointer;
 }
 
-/* modals for posts */ 
+/* modals for posts */
 
 .post-modal {
   background-color: #fefefe;
@@ -203,14 +203,14 @@ form input, form button {
 }
 
 #puser:hover {
-  color: gray; 
+  color: gray;
   text-decoration: underline;
 }
 
 #pgrid {
-  margin: 1em 0 1.5em 0; 
+  margin: 1em 0 1.5em 0;
 }
 
 #ptitle {
-  font-weight: bold; 
+  font-weight: bold;
 }

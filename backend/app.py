@@ -103,8 +103,7 @@ def index():
                 images.append(p)
 
     images.sort(
-        key=lambda x: x["time"] if "time" in x else datetime(
-            1970, 1, 1, 0, 0, 0, 0),
+        key=lambda x: x["time"] if "time" in x else datetime(1970, 1, 1, 0, 0, 0, 0),
         reverse=True,
     )
 
@@ -149,20 +148,20 @@ def userApi(username):
 
     # get posts from most recent to oldest
     posts = []
-    for img in user["posts"]:
-        posts.insert(0, get_image(img, username))
+    if "posts" in user:
+        for img in user["posts"]:
+            posts.insert(0, get_image(img, username))
 
     p = page_info(f"userApi/{username}")
 
     following = False
 
     if p[0]:
-        follow = users.find_one(
-            {"username": p[0]}, projection={"following": True})
+        follow = users.find_one({"username": p[0]}, projection={"following": True})
         if "following" in follow and username in follow["following"]:
             following = True
     pfpData = ""
-    if "pfpSrc" in user:
+    if "pfpSrc" in user and user["pfpSrc"] != "":
         pfpData = imgStr(user["pfpSrc"])
     if pfpData == "data:image/png;base64,":
         pfpData = ""
@@ -181,7 +180,7 @@ def userApi(username):
     )
 
 
-@ app.route("/register", methods=["POST"])
+@app.route("/register", methods=["POST"])
 def register():
     if "username" in session:
         return "already logged in", 405
@@ -230,7 +229,7 @@ def register():
     return redirect(url_for(session["url"]))
 
 
-@ app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST"])
 def login():
     if "username" in session:
         return "already logged in", 405
@@ -241,8 +240,7 @@ def login():
     username = request.args.get("username") or request.form.get("username")
     password = request.args.get("password") or request.form.get("password")
     error = None
-    user = users.find_one({"username": username},
-                          projection={"password": True})
+    user = users.find_one({"username": username}, projection={"password": True})
 
     if user is None:
         error = "Incorrect username."
@@ -262,7 +260,7 @@ def login():
     return redirect(url_for(session["url"]))
 
 
-@ app.route("/logout")
+@app.route("/logout")
 def logout():
     if "username" in session:
         session.pop("username", None)
@@ -293,7 +291,7 @@ def userExists(username):
 # imageSrc, the image url of the post
 
 
-@ app.route("/createPost", methods=["POST"])
+@app.route("/createPost", methods=["POST"])
 def createPost():
     if "username" not in session:
         return "Must be logged in", 401
@@ -307,8 +305,7 @@ def createPost():
     caption = request.args.get("caption") or request.form.get("caption")
     file = request.files["imageSrc"]
     imageSrc = request.args.get("imageSrc") or file.filename
-    redirectURL = request.args.get(
-        "returnURL") or request.form.get("returnURL")
+    redirectURL = request.args.get("returnURL") or request.form.get("returnURL")
     time = datetime.now()
 
     image = base64.b64encode(file.read())
@@ -336,7 +333,7 @@ def createPost():
 # title, the new title of the post
 # caption, the new caption of the post
 # imageSrc, the new image url of the post
-@ app.route("/updatePost", methods=["POST"])
+@app.route("/updatePost", methods=["POST"])
 def updatePost():
     if "username" not in session:
         return "Must be logged in", 401
@@ -372,7 +369,7 @@ def updatePost():
 # index, the position of the element in the posts array
 
 
-@ app.route("/deletePost", methods=["POST"])
+@app.route("/deletePost", methods=["POST"])
 def deletePost():
     if "username" not in session:
         return "Must be logged in", 401
@@ -384,10 +381,8 @@ def deletePost():
 
     index = request.args.get("index") or request.form.get("index")
 
-    users.find_one_and_update({"username": username}, {
-                              "$unset": {f"posts.{index}": 1}})
-    users.find_one_and_update({"username": username}, {
-                              "$pull": {"posts": None}})
+    users.find_one_and_update({"username": username}, {"$unset": {f"posts.{index}": 1}})
+    users.find_one_and_update({"username": username}, {"$pull": {"posts": None}})
     return "200"
 
 
@@ -398,18 +393,17 @@ def deletePost():
 # returns a post
 
 
-@ app.route("/getPost", methods=["POST"])
+@app.route("/getPost", methods=["POST"])
 def getPost():
     db = client["users"]
     users = db["user1"]
 
     username = request.args.get("username") or request.form.get("username")
     if not userExists(username):
-        return "No such user exists"
+        return "No such user exists", 404
     index = int(request.args.get("index") or request.form.get("index"))
 
-    posts = users.find_one({"username": username}, projection={
-        "posts": True})["posts"]
+    posts = users.find_one({"username": username}, projection={"posts": True})["posts"]
     if posts is None:
         return "This user has no posts"
     if index >= len(posts) or index < 0:
@@ -421,7 +415,7 @@ def getPost():
         return requestedPost
 
 
-@ app.route("/updateUser", methods=["POST"])
+@app.route("/updateUser", methods=["POST"])
 def updateUser():
     db = client["users"]
     users = db["user1"]
@@ -430,17 +424,17 @@ def updateUser():
 
     username = session["username"]
     if not userExists(username):
-        return "No such user exists"
+        return "No such user exists", 404
     pfpPic = request.files["pfpPic"]
     image = base64.b64encode(pfpPic.read())
-    redirectURL = request.args.get(
-        "returnURL") or request.form.get("returnURL")
-    users.find_one_and_update({"username": username}, {
-                              "$set": {"pfpSrc": image}}, upsert=True)
+    redirectURL = request.args.get("returnURL") or request.form.get("returnURL")
+    users.find_one_and_update(
+        {"username": username}, {"$set": {"pfpSrc": image}}, upsert=True
+    )
     return redirect(redirectURL)
 
 
-@ app.route("/follow/<string:username>", methods=["POST"])
+@app.route("/follow/<string:username>", methods=["POST"])
 def follow(username):
     db = client["users"]
     users = db["user1"]
@@ -477,7 +471,7 @@ def follow(username):
     return redirect(url_for(session["url"]))
 
 
-@ app.route("/unfollow/<string:username>", methods=["POST"])
+@app.route("/unfollow/<string:username>", methods=["POST"])
 def unfollow(username):
     db = client["users"]
     users = db["user1"]
@@ -522,8 +516,7 @@ def serverGetPost(username, index):
     if not userExists(username):
         return "No such user exists"
 
-    posts = users.find_one({"username": username}, projection={
-        "posts": True})["posts"]
+    posts = users.find_one({"username": username}, projection={"posts": True})["posts"]
     if posts is None:
         return "This user has no posts"
     if index >= len(posts) or index < 0:
@@ -546,10 +539,14 @@ def serverGetAllPosts(username):
 
     return posts["posts"] if "posts" in posts else []
 
-@app.route('/favicon.ico')
+
+@app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(
+        os.path.join(app.root_path, "static"),
+        "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
+    )
 
 
 updateBundles()

@@ -21,7 +21,8 @@ block content
     header.header-profile
       .details
         //- img.profile-pic(src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTakSD1xNifdNXl-8X_V3eB6NEYbqWc5w2MMg&usqp=CAU' alt='John Doe')
-        img.add-profile-pic(id="pfp-button" src="/images/add-prof-pic.svg", alt="")
+        if user.username == username
+          img.add-profile-pic(id="pfp-button" src="/images/add-prof-pic.svg", alt="")
         if pfpData
           img.profile-pic(src=pfpData alt='John Doe')
         else 
