@@ -1,5 +1,6 @@
 
 # Foodstagram
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/varsharathore16/Foodstagram/blob/main/LICENSE)
 
 Week 9 Project for MLH Production Engineering Fellowship!
 
@@ -67,4 +68,17 @@ flask run
 ```
 
 or use vsc debugger by pressing `F5`.
+
+## Testing
+
+To run tests:
+
+Run entire test suite -
+```bash
+pytest
+```
+Run specific test file -
+```bash
+pytest <filename>.py
+```
 
