@@ -52,11 +52,11 @@ For deployment of the site, we use our Deploy action. However, in order for this
         $ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         $ sudo chmod +x /usr/local/bin/docker-compose
 
-4. Run the command `git clone <git repository HTTPS link>` to create a copy of the repository on your instance. 
+4. Run the command `git clone <Github repository HTTPS link>` to create a copy of the repository on your instance. 
 
 Note: in order for the Deploy action to work, make sure your Github repository secrets (accessible in the 'Settings' tab) are updated with the correct values.
 
-Our site uses an Nginx-Certbot container with Let's Encrypt certificates. In order to install Let's Encrypt certificates, follow the instructions [here](https://certbot.eff.org/lets-encrypt/centosrhel8-nginx) (make sure to follow the instructions for installing snapd on CentOS 8), and replace the certificate files in `user_conf.d/nginx_conf.conf` with the files created by Certbot on your instance. Make sure your domain is linked to your AWS EC2 instance's public IP address.  
+Our site uses an Nginx-Certbot container with Let's Encrypt certificates. In order to install Let's Encrypt certificates, follow the instructions [here](https://certbot.eff.org/lets-encrypt/centosrhel8-nginx) (for installing snapd, make sure you are following the instructions for CentOS 8 specifically), and replace the certificate files in `user_conf.d/nginx_conf.conf` with the files created by Certbot on your instance. Make sure your domain is linked to your AWS EC2 instance's public IP address.  
 
 
 ## Contributing
