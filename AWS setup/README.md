@@ -40,21 +40,17 @@ For deployment of the site, we use our Deploy action. However, in order for this
 1. Use the command `sudo dnf install git` to install git. 
 2. Run the following commands to install Docker: 
 
-        ```bash
         $ curl -sSL https://get.docker.com/ | sudo sh
         $ sudo systemctl start docker
         $ sudo systemctl enable docker
         $ sudo systemctl enable containerd
         $ sudo groupadd docker
         $ sudo usermod -aG docker $USER
-        ```
 
 3. Use `exit` to exit the instance. SSH into the instance again, and then install Docker-Compose with the following commands: 
 
-        ```bash
         $ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         $ sudo chmod +x /usr/local/bin/docker-compose
-        ```
 
 4. Run the command `git clone <git repository HTTPS link>` to create a copy of the repository on your instance. 
 Note: in order for the Deploy action to work, make sure your Github repository secrets (accessible in the 'Settings' tab) are updated with the correct values.
