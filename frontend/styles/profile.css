@@ -27,15 +27,14 @@
   object-fit: center;
   border-radius: 50%;
   border: 5px solid #bbb;
-  background-color:  #bbb;
+  background-color: #bbb;
 }
 
 .add-profile-pic {
-  position: relative;
+  position: absolute;
   width: 25px;
-  left: -50px;
-  top: 50px;
-  padding: 25px;
+  top: 10px;
+  margin-left: -100px;
 }
 
 .stats {
