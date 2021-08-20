@@ -51,6 +51,11 @@ Use the package manager pip to install all dependencies:
 pip install -r requirements.txt
 ```
 
+## AWS Configuration
+
+Please view the following README for AWS Configuration information:
+https://github.com/varsharathore16/Foodstagram/tree/main/AWS%20setup
+
 
 ## Usage
 
