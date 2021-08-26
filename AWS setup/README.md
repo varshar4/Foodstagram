@@ -56,7 +56,7 @@ For deployment of the site, we use our Deploy action. However, in order for this
 
 Note: in order for the Deploy action to work, make sure your Github repository secrets (accessible in the 'Settings' tab) are updated with the correct values.
 
-Our site uses an Nginx-Certbot container with Let's Encrypt certificates. In order to install Let's Encrypt certificates, follow the instructions [here](https://certbot.eff.org/lets-encrypt/centosrhel8-nginx) (for installing snapd, make sure you are following the instructions for CentOS 8 specifically), and replace the certificate files in `user_conf.d/nginx_conf.conf` with the files created by Certbot on your instance. Make sure your domain is linked to your AWS EC2 instance's public IP address.  
+Our site uses an Nginx-Certbot container with Let's Encrypt certificates. For this, you must have Nginx installed on the instance (`sudo dnf install nginx`). In order to install Let's Encrypt certificates, follow the instructions [here](https://certbot.eff.org/lets-encrypt/centosrhel8-nginx) (for installing snapd, make sure you are following the instructions for CentOS 8 specifically), and replace the certificate files in `user_conf.d/nginx_conf.conf` with the files created by Certbot on your instance. Make sure your domain is linked to your AWS EC2 instance's public IP address. 
 
 
 ## Contributing
