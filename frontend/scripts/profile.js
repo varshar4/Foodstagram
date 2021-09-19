@@ -29,11 +29,13 @@ var pfpModal = document.getElementById("new-profile-pic-modal");
 var pfpImageSrc = document.getElementById("pf-image-src");
 var pfpUploadedImage = document.getElementById("pf-image-uploaded");
 
-pfpButton.onclick = function () {
-  if (pfpModal.style.display != "grid") {
-    pfpModal.style.display = "grid";
-  }
-};
+if (pfpButton) {
+  pfpButton.onclick = function () {
+    if (pfpModal.style.display != "grid") {
+      pfpModal.style.display = "grid";
+    }
+  };
+}
 
 pfpModal.onclick = function (event) {
   if (event.target == pfpModal) {
